@@ -1,4 +1,6 @@
 body {
+  background-color: #121212 !important; /* Fondo oscuro */
+
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -10,4 +12,21 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.table {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+.table thead {
+  background-color: #333 !important;
+}
+
+.btn {
+  color: white !important;
+}
+
+a {
+  color: #bb86fc !important; /* Enlaces en color violeta */
 }

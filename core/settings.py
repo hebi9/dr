@@ -27,8 +27,7 @@ SECRET_KEY = 'django-insecure-uqfn=wmgi#45k=47t^t2)w52lo(y@f@5%m#zh526g268+@azzs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 PERSONAL_APPS = [
@@ -69,10 +68,16 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',    
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',  # React frontend
+    'http://127.0.0.1:3000',
 ]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000', 
+    'http://127.0.0.1:3000'   
+]
+CORS_ALLOW_CREDENTIALS = True  # Permitir envío de cookies con credenciales
+
 
 
 ROOT_URLCONF = 'core.urls'
