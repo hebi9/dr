@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model 
+from django.utils import timezone  # Importa timezone
 
 # Create your models here.
 
@@ -26,14 +27,13 @@ class Payment_method(models.Model):
 class Finances(models.Model):    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    create = models.DateTimeField(auto_now_add=True)
-    update = models.DateTimeField(auto_now=True)
+    create = models.DateTimeField(default=timezone.now)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     payment_method = models.ForeignKey(Payment_method, on_delete=models.PROTECT)
     type = models.CharField(max_length=10, choices=[('Expense', 'Gasto'), ('Income', 'Ingreso')], default='Expense', null=True, blank=True)
     
     def __str__(self):
-        return self.amount
+        return f'{self.amount}'
     
     class Meta:
         verbose_name = 'Gasto'

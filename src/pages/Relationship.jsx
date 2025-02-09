@@ -14,6 +14,9 @@ const Relationship = () => {
     });
     const username = localStorage.getItem("username")
     const toggle = () => setModal(!modal);
+    const API_URL = window.location.origin.includes("devtunnels.ms")
+                ? "https://250w7qvn-8000.usw3.devtunnels.ms/api/relationship/"
+                : "http://127.0.0.1:8000/api/relationship/";
 
     // Obtener relaciones desde la API
     const fetchRelationships = async () => {
@@ -23,7 +26,7 @@ const Relationship = () => {
                 return;
             }
     
-            const response = await fetch(`http://localhost:8000/api/relationship/?username=${username}`);
+            const response = await fetch(API_URL+`?username=${username}`);
             if (response.ok) {
                 const data = await response.json();
                 setRelationships(data.relationships);  // Establecer las relaciones obtenidas
@@ -52,7 +55,7 @@ const Relationship = () => {
         e.preventDefault();
         try {
             const csrfToken = await getCSRFToken();
-            const response = await fetch("http://localhost:8000/api/relationship/post/", {
+            const response = await fetch(API_URL+"post/", {
                 method: "POST",
                 credentials: "include", // Asegura que se envíen cookies
                 headers: {

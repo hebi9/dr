@@ -14,6 +14,9 @@ const Finances = () => {
         type: "Expense",
         username: localStorage.getItem("username"),
     });
+    const API_URL = window.location.origin.includes("devtunnels.ms")
+                ? "https://250w7qvn-8000.usw3.devtunnels.ms/api/finances/"
+                : "http://127.0.0.1:8000/api/finances/";
 
     const toggle = () => setModal(!modal);
     const username = localStorage.getItem("username");
@@ -21,7 +24,7 @@ const Finances = () => {
     // Obtener finanzas, categorías y métodos de pago
     const fetchFinances = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/api/finances/?username=${username}`);
+            const response = await fetch(API_URL+`?username=${username}`);
             if (response.ok) {
                 const data = await response.json();
                 setFinances(data.finances);
@@ -53,7 +56,9 @@ const Finances = () => {
         e.preventDefault();
         try {
             const csrfToken = await getCSRFToken();
-            const response = await fetch("http://localhost:8000/api/finances/post/", {
+            
+            
+            const response = await fetch(API_URL+'post/', {
                 method: "POST",
                 credentials: "include",
                 headers: {

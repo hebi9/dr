@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone  # Importa timezone
 
 # Create your models here.
 
@@ -28,7 +29,7 @@ class Relationship(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     estatus = models.CharField(max_length=10,choices=[('Good', 'Bien'), ('Regular', 'Regular'), ('Bad', 'Malo')], default='Good', null=True, blank=True)
     note = models.TextField(null=True, blank=True)
-    create = models.DateTimeField(auto_now_add=True)
+    create = models.DateTimeField(default=timezone.now)
     dessert = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -42,7 +43,7 @@ class Relationship(models.Model):
             streak.reset_streak() 
             
     def __str__(self):
-        return self.create
+        return f'{self.create}'
     
     class Meta:
         verbose_name = 'Relación'

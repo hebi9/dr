@@ -1,5 +1,7 @@
-const API_URL = "http://127.0.0.1:8000/api/token/";
-
+const API_URL =
+  window.location.origin.includes("devtunnels.ms")
+    ? "https://250w7qvn-8000.usw3.devtunnels.ms/api/token/"
+    : "http://127.0.0.1:8000/api/token/";
 export const login = async (username, password) => {
     try {
         const response = await fetch(API_URL, {
