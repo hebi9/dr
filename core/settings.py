@@ -71,10 +71,15 @@ REST_FRAMEWORK = {
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',  # React frontend
     'http://127.0.0.1:3000',
-     'https://n683qdqd-8000.usw3.devtunnels.ms']
+    'https://n683qdqd-8000.usw3.devtunnels.ms',
+    'http://localhost:8000'
+    ]  
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000', 
-    'http://127.0.0.1:3000' , 'https://n683qdqd-8000.usw3.devtunnels.ms']  
+    'http://127.0.0.1:3000' ,
+    'https://n683qdqd-8000.usw3.devtunnels.ms',
+    'http://localhost:8000'
+    ]  
 
 CORS_ALLOW_CREDENTIALS = True  # Permitir envío de cookies con credenciales
 
