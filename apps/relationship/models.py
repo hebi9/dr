@@ -29,18 +29,30 @@ class Relationship(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     estatus = models.CharField(max_length=10,choices=[('Good', 'Bien'), ('Regular', 'Regular'), ('Bad', 'Malo')], default='Good', null=True, blank=True)
     note = models.TextField(null=True, blank=True)
-    create = models.DateTimeField(default=timezone.now)
+    empathy = models.TextField(null=True, blank=True)
+    comprehension = models.TextField(null=True, blank=True)
+    curiosity = models.TextField(null=True, blank=True)
+    learn_more = models.TextField(null=True, blank=True)
+    learn_from_you = models.TextField(null=True, blank=True)
+    miracle  = models.TextField(null=True, blank=True)
+    create = models.DateField(default=timezone.now)
     dessert = models.BooleanField(default=False)
+    
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Guarda la relación primero
+        # Verifica si el objeto ya existe para saber si es un nuevo registro
+        is_new = self._state.adding
         
+        super().save(*args, **kwargs)  # Guarda la relación primero
+
         # Manejo de la racha (streak)
         streak, created = Streak.objects.get_or_create(user=self.user)  # Obtiene o crea la racha del usuario
-        if self.estatus == 'Good':
+
+        # Solo se incrementa la racha si es un nuevo registro
+        if is_new and self.estatus == 'Good':
             streak.increment_streak()  # Incrementa la racha
-        elif self.estatus == 'Bad':
-            streak.reset_streak() 
+        elif is_new and self.estatus == 'Bad':
+            streak.reset_streak()  # Reinicia la racha
             
     def __str__(self):
         return f'{self.create}'

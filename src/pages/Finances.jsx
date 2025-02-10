@@ -1,6 +1,10 @@
-import { useEffect, useState } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Table } from "reactstrap";
-import { getCSRFToken } from "../services/csrf";
+// pages/Finances.js
+import React, { useState, useEffect } from 'react';
+import { Button, Table } from 'reactstrap';
+import { fetchFinancesData, submitFinanceData } from '../services/finances';
+import FinanceFilters from '../components/FinanceFilters';
+import FinanceForm from '../components/FinanceForm';
+import { getCSRFToken } from '../services/csrf';
 
 const Finances = () => {
     const [modal, setModal] = useState(false);
@@ -14,77 +18,64 @@ const Finances = () => {
         type: "Expense",
         username: localStorage.getItem("username"),
     });
+    const [filters, setFilters] = useState({
+        category: "",
+        payment_method: "",
+        start_date: "",
+        end_date: ""
+    });
     const API_URL = window.location.origin.includes("devtunnels.ms")
                 ? "https://250w7qvn-8000.usw3.devtunnels.ms/api/finances/"
                 : "http://127.0.0.1:8000/api/finances/";
+    const [amountTotal, setAmountTotal] = useState(0);
 
-    const toggle = () => setModal(!modal);
-    const username = localStorage.getItem("username");
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await fetchFinancesData(filters, formData.username, API_URL);
+            setFinances(data.finances);
+            setCategories(data.categories || []);
+            setPaymentMethods(data.payment_methods || []);
+            setAmountTotal(data.finances.reduce((total, finance) => total + parseFloat(finance.amount), 0));
+        };
+        fetchData();
+    }, [filters, formData.username]);
 
-    // Obtener finanzas, categorías y métodos de pago
-    const fetchFinances = async () => {
-        try {
-            const response = await fetch(API_URL+`?username=${username}`);
-            if (response.ok) {
-                const data = await response.json();
-                setFinances(data.finances);
-                setCategories(data.categories || []);
-                setPaymentMethods(data.payment_methods || []);
-                console.log(data.categories);
-            } else {
-                console.error("Error al obtener finanzas");
-            }
-        } catch (error) {
-            console.error("Error en la solicitud:", error);
-        }
+    const handleFilterChange = (e) => {
+        setFilters({
+            ...filters,
+            [e.target.name]: e.target.value
+        });
     };
 
-  
-    useEffect(() => {
-        fetchFinances();
-    }, []);
+    const applyFilters = () => {
+        fetchFinancesData(filters, formData.username, API_URL);
+    };
 
-    // Manejo del formulario
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
+    const toggle = () => {
+        setModal(!modal);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const csrfToken = await getCSRFToken();
-            
-            
-            const response = await fetch(API_URL+'post/', {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrfToken,
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (response.ok) {
-                toggle();
-                fetchFinances(); // Refrescar lista después de agregar
-            } else {
-                console.error("Error al enviar la información");
-            }
-        } catch (error) {
-            console.error("Error en la solicitud:", error);
-        }
+        const csrfToken = await getCSRFToken();
+        await submitFinanceData(formData, API_URL, csrfToken);
+        toggle();  // Close modal after submission
     };
+    
+    const username = localStorage.getItem("username");
 
     return (
-        <div>
+        <>
+            <FinanceFilters
+                filters={filters}
+                categories={categories}
+                paymentMethods={paymentMethods}
+                handleFilterChange={handleFilterChange}
+                applyFilters={applyFilters}
+            />
             <h2>Finanzas {username}</h2>
             <Button color="primary" onClick={toggle}>Agregar Finanzas</Button>
-
-            {/* Tabla de Finanzas */}
+            <h2>Total Finanzas: ${amountTotal}</h2>
             <Table striped className="mt-3">
                 <thead>
                     <tr>
@@ -93,88 +84,32 @@ const Finances = () => {
                         <th>Categoría</th>
                         <th>Método de Pago</th>
                         <th>Tipo</th>
+                        <th>Nota</th>
                     </tr>
                 </thead>
                 <tbody>
                     {finances.map((finance) => (
                         <tr key={finance.id}>
-                            <td>{new Date(finance.create).toLocaleString()}</td>
+                            <td>{finance.create}</td>
                             <td>${finance.amount}</td>
                             <td>{finance.category}</td>
                             <td>{finance.payment_method}</td>
                             <td>{finance.type === "Expense" ? "Gasto" : "Ingreso"}</td>
+                            <td>{finance.note}</td>
                         </tr>
                     ))}
                 </tbody>
             </Table>
-
-            {/* Modal para agregar finanzas */}
-            <Modal isOpen={modal} toggle={toggle}>
-                <ModalHeader toggle={toggle}>Agregar Finanzas</ModalHeader>
-                <ModalBody>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-3">
-                            <label className="form-label">Monto</label>
-                            <input type="number" className="form-control" name="amount" value={formData.amount} onChange={handleChange} required />
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label">Categoría</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Escribe o selecciona"
-                                name="category"
-                                value={formData.category.name}
-                                onChange={handleChange}
-                                list="categoriesList"
-                                required
-                            />
-                            <datalist id="categoriesList">
-                                {categories.map((cat, index) => (
-                                    <option key={index} value={cat.name} />
-                                ))}
-                            </datalist>
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label">Método de Pago</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Escribe o selecciona"
-                                name="payment_method"
-                                value={formData.payment_method.name}
-                                onChange={handleChange}
-                                list="paymentMethodsList"
-                                required
-                            />
-                            <datalist id="paymentMethodsList">
-                                {paymentMethods.map((method, index) => (
-                                    <option key={index} value={method.name} />
-                                ))}
-                            </datalist>
-                        </div>
-
-
-                        <div className="mb-3">
-                            <label className="form-label">Tipo</label>
-                            <select className="form-control" name="type" value={formData.type} onChange={handleChange} required>
-                                <option value="Expense">Gasto</option>
-                                <option value="Income">Ingreso</option>
-                            </select>
-                        </div>
-
-                        
-
-                        <ModalFooter>
-                            <Button color="primary" type="submit">Guardar</Button>
-                            <Button color="secondary" onClick={toggle}>Cancelar</Button>
-                        </ModalFooter>
-                    </form>
-                </ModalBody>
-            </Modal>
-        </div>
+            <FinanceForm
+                modal={modal}
+                toggle={toggle}
+                formData={formData}
+                setFormData={setFormData}
+                categories={categories}
+                paymentMethods={paymentMethods}
+                handleSubmit={handleSubmit}
+            />
+        </>
     );
 };
 

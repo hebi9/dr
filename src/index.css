@@ -27,6 +27,6 @@ code {
   color: white !important;
 }
 
-a {
-  color: #bb86fc !important; /* Enlaces en color violeta */
+a,h2,h3,h4,h5,h6, .text-white {
+  color: #ffffff !important; /* Enlaces en color violeta */
 }
