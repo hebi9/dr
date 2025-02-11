@@ -4,7 +4,7 @@ import React from 'react';
 const FinanceFilters = ({ filters, categories, paymentMethods, handleFilterChange, applyFilters }) => {
     return (
         <div className="row text-white">
-            <div className="col-2">
+            <div className="col-3">
                 <label className="form-label">Categoría</label>
                 <select
                     className="form-control"
@@ -18,7 +18,7 @@ const FinanceFilters = ({ filters, categories, paymentMethods, handleFilterChang
                     ))}
                 </select>
             </div>
-            <div className="col-2">
+            <div className="col-3">
                 <label className="form-label">Método de Pago</label>
                 <select
                     className="form-control"
@@ -32,7 +32,7 @@ const FinanceFilters = ({ filters, categories, paymentMethods, handleFilterChang
                     ))}
                 </select>
             </div>
-            <div className="col-2">
+            <div className="col-3">
                 <label className="form-label">Fecha de inicio</label>
                 <input
                     type="date"
@@ -42,7 +42,7 @@ const FinanceFilters = ({ filters, categories, paymentMethods, handleFilterChang
                     onChange={handleFilterChange}
                 />
             </div>
-            <div className="col-2">
+            <div className="col-3">
                 <label className="form-label">Fecha de fin</label>
                 <input
                     type="date"
@@ -52,7 +52,7 @@ const FinanceFilters = ({ filters, categories, paymentMethods, handleFilterChang
                     onChange={handleFilterChange}
                 />
             </div>
-            <button className="btn btn-primary col-2" onClick={applyFilters}>Filtrar</button>
+            {/* <button className="btn btn-primary col-3" onClick={applyFilters}>Filtrar</button> */}
         </div>
     );
 };
