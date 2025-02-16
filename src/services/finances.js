@@ -38,6 +38,7 @@ export const submitFinanceData = async (formData, API_URL, csrfToken) => {
         });
 
         if (!response.ok) throw new Error("Error al enviar la información");
+        return response.ok;
     } catch (error) {
         console.error("Error en la solicitud:", error);
         throw error;

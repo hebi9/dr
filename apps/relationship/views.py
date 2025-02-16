@@ -59,7 +59,20 @@ def relationship(request):
 @api_view(['POST'])
 def post_relationship(request):
     data = json.loads(request.body)
-    print(data.get('username'))
+    relationship = data.get('id')
+    if relationship:
+        relationship = Relationship.objects.get(id=relationship)
+        relationship.estatus = data.get('estatus')
+        relationship.note = data.get('note')
+        relationship.dessert = data.get('dessert')
+        relationship.empathy = data.get('empathy')
+        relationship.comprehension = data.get('comprehension')
+        relationship.curiosity = data.get('curiosity')
+        relationship.learn_more = data.get('learn_more')
+        relationship.learn_from_you = data.get('learn_from_you')
+        relationship.miracle = data.get('miracle')
+        relationship.save()
+        return JsonResponse({'success': True},status=200)
     relationship = Relationship.objects.create(
         user = User.objects.get(username=data.get('username')),
         estatus = data.get('estatus'),

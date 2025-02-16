@@ -84,7 +84,7 @@ const FinanceForm = ({ modal, toggle, formData, setFormData, categories, payment
                             type="date"
                             className="form-control"
                             name="create"
-                            value={new Date().toISOString().split('T')[0]}
+                            value={formData.create}
                             onChange={handleChange}
                             required
                         />

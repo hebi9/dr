@@ -16,7 +16,9 @@ const Finances = () => {
         category: "",
         payment_method: "",
         type: "Expense",
+        note: "",
         username: localStorage.getItem("username"),
+        create: new Date().toISOString().split('T')[0],
     });
     const [filters, setFilters] = useState({
         category: "",
@@ -29,14 +31,15 @@ const Finances = () => {
                 : "http://127.0.0.1:8000/api/finances/";
     const [amountTotal, setAmountTotal] = useState(0);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await fetchFinancesData(filters, formData.username, API_URL);
-            setFinances(data.finances);
-            setCategories(data.categories || []);
-            setPaymentMethods(data.payment_methods || []);
-            setAmountTotal(data.finances.reduce((total, finance) => total + parseFloat(finance.amount), 0));
-        };
+    const fetchData = async () => {
+        const data = await fetchFinancesData(filters, formData.username, API_URL);
+        setFinances(data.finances);
+        setCategories(data.categories || []);
+        setPaymentMethods(data.payment_methods || []);
+        setAmountTotal(data.finances.reduce((total, finance) => total + parseFloat(finance.amount), 0));
+    };
+
+    useEffect(() => {        
         fetchData();
     }, [filters, formData.username]);
 
@@ -60,6 +63,7 @@ const Finances = () => {
         const csrfToken = await getCSRFToken();
         await submitFinanceData(formData, API_URL, csrfToken);
         toggle();  // Close modal after submission
+        fetchData();
     };
     
     const username = localStorage.getItem("username");

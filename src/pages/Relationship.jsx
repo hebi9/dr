@@ -13,6 +13,12 @@ const Relationship = () => {
         estatus: "Good",
         note: "",
         dessert: false,
+        empaty: "",
+        comprehension: "",
+        curiosity: "",
+        learn_more: "",
+        learn_from_you: "",
+        miracle: "",
         username: localStorage.getItem("username"),
         create: new Date().toISOString().split('T')[0],
     });
@@ -45,7 +51,13 @@ const Relationship = () => {
                 estatus: "Good",
                 note: "",
                 dessert: false,
-                username,
+                empaty: "",
+                comprehension: "",
+                curiosity: "",
+                learn_more: "",
+                learn_from_you: "",
+                miracle: "",
+                username: localStorage.getItem("username"),
                 create: new Date().toISOString().split('T')[0],
             });
         }
